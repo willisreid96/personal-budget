@@ -14,9 +14,9 @@
 <a href="#main" class="skip">Skip to content</a>
     <nav>
         <ul>
-            <li><a href="pb/public/index.html">Home</a></li>
-            <li><a href="pb/public/about.html">About</a></li>
-            <li><a href="pb/public/login.html">Login</a></li>
+            <li><a href="public/index.html">Home</a></li>
+            <li><a href="public/about.html">About</a></li>
+            <li><a href="public/login.html">Login</a></li>
             <li><a href="https://google.com">Google</a></li>
         </ul>
     </nav>
@@ -217,7 +217,7 @@
     }
 
     // ---------- Fetch once, render both ----------
-    axios.get('/budget')  // ← relative path; same-origin
+    axios.get('../budget.json')  // ← relative path; same-origin
         .then(function(res){
         console.log('GET /budget response:', res.data);
         var items = (res.data && res.data.myBudget) ? res.data.myBudget : [];
@@ -251,7 +251,6 @@
         change([{label:'Demo A',value:1},{label:'Demo B',value:2},{label:'Demo C',value:3}]);
         });
     </script>
-
-
+    
     </body>
     </html>
