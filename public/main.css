@@ -101,6 +101,24 @@ main article {
     text-align: justify;
     margin: 20px;
 }
+#d3-donut {
+  font: 10px sans-serif;
+  text-align: center;
+}
+#d3-donut svg {
+  overflow: visible;
+}
+#d3-donut .labels text {
+  fill: #111;
+  font: 13px/1.2 sans-serif;
+}
+#d3-donut .lines polyline {
+  stroke: #999;
+  stroke-width: 2;
+  fill: none;
+  opacity: .6;
+}
+
 
 @media screen and (min-width: 768px) {
     main article {
