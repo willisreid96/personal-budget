@@ -1,0 +1,96 @@
+{
+  "info": {
+    "name": "Personal Budget API",
+    "description": "API endpoints for Personal Budget application with MongoDB",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Budgets",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/api/budgets",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "budgets"]
+        },
+        "description": "Fetch all budget items from MongoDB database"
+      }
+    },
+    {
+      "name": "Add New Budget Item",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Coffee\",\n    \"value\": 25,\n    \"color\": \"#8B4513\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/budgets",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "budgets"]
+        },
+        "description": "Add a new budget item to the database. All fields (title, value, color) are required. Color must be in hexadecimal format."
+      }
+    },
+    {
+      "name": "Add Budget Item - Invalid Color",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Books\",\n    \"value\": 50,\n    \"color\": \"red\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/budgets",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "budgets"]
+        },
+        "description": "Test case for invalid color format - should return error"
+      }
+    },
+    {
+      "name": "Add Budget Item - Missing Fields",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"title\": \"Incomplete Item\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/budgets",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["api", "budgets"]
+        },
+        "description": "Test case for missing required fields - should return error"
+      }
+    }
+  ]
+}

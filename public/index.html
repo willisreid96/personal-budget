@@ -149,10 +149,13 @@
     var arc = d3.svg.arc().outerRadius(radius*0.8).innerRadius(radius*0.4);
     var outerArc = d3.svg.arc().innerRadius(radius*0.9).outerRadius(radius*0.9);
 
-    var color = d3.scale.ordinal().range(
-        ['#98abc5','#8a89a6','#7b6888','#6b486b','#a05d56','#d0743c','#ff8c00',
-        '#2ca02c','#1f77b4','#9467bd','#e377c2','#7f7f7f','#bcbd22','#17becf']
-    );
+    var color = d3.scale.ordinal();
+
+    // Function to update color scale with actual colors from data
+    function updateColorScale(data) {
+        var colors = data.map(function(d) { return d.color || '#999999'; });
+        color.range(colors);
+    }
 
     var key = function(d){ return d.data.label; };
     function midAngle(d){ return d.startAngle + (d.endAngle - d.startAngle)/2; }
@@ -161,7 +164,7 @@
         var slice = svg.select('.slices').selectAll('path.slice').data(pie(data), key);
 
         slice.enter().append('path').attr('class','slice')
-        .style('fill', function(d){ return color(d.data.label); });
+        .style('fill', function(d){ return d.data.color || color(d.data.label); });
 
         slice.transition().duration(1000).attrTween('d', function(d){
         this._current = this._current || d;
@@ -217,38 +220,40 @@
     }
 
     // ---------- Fetch once, render both ----------
-    axios.get('../budget.json')  // ← relative path; same-origin
+    axios.get('/api/budgets')  // fetch from MongoDB 
         .then(function(res){
-        console.log('GET /budget response:', res.data);
-        var items = (res.data && res.data.myBudget) ? res.data.myBudget : [];
+        console.log('GET /api/budgets response:', res.data);
+        var items = res.data || [];
 
         // Chart.js
-        dataSource.datasets[0].data = items.map(function(it){ return +it.budget; });
+        dataSource.datasets[0].data = items.map(function(it){ return +it.value; });
         dataSource.labels = items.map(function(it){ return it.title; });
+        dataSource.datasets[0].backgroundColor = items.map(function(it){ return it.color; });
         createChart();
 
         // D3
-        var d3Data = items.map(function(it){ return { label: it.title, value: +it.budget }; });
+        var d3Data = items.map(function(it){ return { label: it.title, value: +it.value, color: it.color }; });
         if (d3Data.length === 0) {
-            console.warn('No data in /budget; rendering demo data.');
-            d3Data = [{label:'Demo A',value:1},{label:'Demo B',value:2},{label:'Demo C',value:3}];
+            console.warn('No data in /api/budgets; rendering demo data.');
+            d3Data = [{label:'Demo A',value:1,color:'#ff6384'},{label:'Demo B',value:2,color:'#36a2eb'},{label:'Demo C',value:3,color:'#ffcd56'}];
         }
+        updateColorScale(d3Data);
         change(d3Data);
 
         var randomBtn = document.getElementById('d3-randomize');
         if (randomBtn) {
             randomBtn.addEventListener('click', function(){
             var randomized = d3Data.map(function(it){
-                return { label: it.label, value: Math.random() * Math.max(1, it.value) + 1 };
+                return { label: it.label, value: Math.random() * Math.max(1, it.value) + 1, color: it.color };
             });
             change(randomized);
             });
         }
         })
         .catch(function(err){
-        console.error('Failed to load /budget:', err);
+        console.error('Failed to load /api/budgets:', err);
         // Draw demo data so you can still see the chart
-        change([{label:'Demo A',value:1},{label:'Demo B',value:2},{label:'Demo C',value:3}]);
+        change([{label:'Demo A',value:1,color:'#ff6384'},{label:'Demo B',value:2,color:'#36a2eb'},{label:'Demo C',value:3,color:'#ffcd56'}]);
         });
     </script>
     
